@@ -34,37 +34,37 @@ CPMAddPackage(
 )
 
 # add boost 
-CPMAddPackage("gh:Orphis/boost-cmake#7f97a08b64bd5d2e53e932ddf80c40544cf45edf@1.71.0")
+#CPMAddPackage("gh:Orphis/boost-cmake#7f97a08b64bd5d2e53e932ddf80c40544cf45edf@1.71.0")
 
 # add json
-CPMAddPackage("gh:nlohmann/json@3.9.1")
+#CPMAddPackage("gh:nlohmann/json@3.9.1")
 
 # add cxxopts 
 # the install option has to be explicitly set to allow installation
-CPMAddPackage(
-  NAME cxxopts
-  GITHUB_REPOSITORY jarro2783/cxxopts
-  VERSION 2.2.1
-  OPTIONS "CXXOPTS_BUILD_EXAMPLES NO" "CXXOPTS_BUILD_TESTS NO" "CXXOPTS_ENABLE_INSTALL YES"
-)
+#CPMAddPackage(
+#  NAME cxxopts
+#  GITHUB_REPOSITORY jarro2783/cxxopts
+#  VERSION 2.2.1
+#  OPTIONS "CXXOPTS_BUILD_EXAMPLES NO" "CXXOPTS_BUILD_TESTS NO" "CXXOPTS_ENABLE_INSTALL YES"
+#)
 
 # add google benchmark 
-CPMAddPackage("gh:cpm-cmake/testpack-fibonacci@2.0")
+#CPMAddPackage("gh:cpm-cmake/testpack-fibonacci@2.0")
 
-CPMAddPackage(
-  NAME benchmark
-  GITHUB_REPOSITORY google/benchmark
-  VERSION 1.5.2
-  OPTIONS "BENCHMARK_ENABLE_TESTING Off"
-)
+#CPMAddPackage(
+#  NAME benchmark
+#  GITHUB_REPOSITORY google/benchmark
+#  VERSION 1.5.2
+#  OPTIONS "BENCHMARK_ENABLE_TESTING Off"
+#)
 
-if(benchmark_ADDED)
-  # enable c++11 to avoid compilation errors
-  set_target_properties(benchmark PROPERTIES CXX_STANDARD 11)
-endif()
+#if(benchmark_ADDED)
+#  # enable c++11 to avoid compilation errors
+#  set_target_properties(benchmark PROPERTIES CXX_STANDARD 11)
+#endif()
 
 # include eigen
-find_package(Threads REQUIRED)
+# find_package(Threads REQUIRED)
 
 SET(EIGEN3_INCLUDE_DIR "$ENV{EIGEN3_INCLUDE_DIR}" )
 IF( NOT EIGEN3_INCLUDE_DIR )
@@ -91,7 +91,8 @@ set_target_properties(Greeter PROPERTIES CXX_STANDARD 17)
 target_compile_options(Greeter PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/permissive->")
 
 # Link dependencies
-target_link_libraries(Greeter PRIVATE fmt::fmt Boost::system Threads::Threads cxxopts nlohmann_json::nlohmann_json fibonacci benchmark)
+target_link_libraries(Greeter PRIVATE fmt::fmt) 
+# Boost::system Threads::Threads cxxopts nlohmann_json::nlohmann_json fibonacci benchmark)
 
 target_include_directories(
   Greeter PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
