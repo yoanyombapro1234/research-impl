@@ -7,7 +7,7 @@
 #include <vector>
 using namespace std;
 
-namespace CGLE {
+namespace Helper {
   /**
    * linspace Generate linearly spaced vectors
    * @param  {T} a             : The minimal element in the vector
@@ -38,4 +38,4 @@ namespace CGLE {
     T randomValue = uniform_dist(e1);
     return randomValue;
   }
-}  // namespace CGLE
+}  // namespace Helper

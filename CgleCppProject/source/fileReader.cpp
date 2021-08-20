@@ -1,17 +1,15 @@
-#pragma once
 #include <constants.h>
 #include <constraint.h>
 #include <fileReader.h>
 
 #include <algorithm>
-#include <ifstream>
-#include <string>
-using namespace Reader;
+#include <iostream>
+using namespace CGLE;
 
 ConstraintReader::ConstraintReader(string& filePath) : m_filePath(std::move(filePath)) {}
 
-void ConstraintReader::ProcessConstraint(int* numProcessedConstraints, const string& value,
-                                         std::unique_ptr<complex<double>>& cmplxValue) {
+void ConstraintReader::ProcessConstraint(int numProcessedConstraints, const string& value,
+                                         complex<double>* cmplxValue) {
   switch (numProcessedConstraints) {
     case 0:
       this->m_constraint.m_WaveType = value;
@@ -39,7 +37,7 @@ void ConstraintReader::ProcessConstraint(int* numProcessedConstraints, const str
       break;
     case 8:
       // TODO: handle this by throwing an exception
-      this->m_constraint.m_k1 = cmplxValue != nullptr ? *cmplxValue.get() : 0;
+      this->m_constraint.m_k1 = *cmplxValue;
       break;
     case 9:
       this->m_constraint.m_K1 = std::stod(value);
@@ -48,7 +46,7 @@ void ConstraintReader::ProcessConstraint(int* numProcessedConstraints, const str
       this->m_constraint.m_K2 = std::stod(value);
       break;
     case 11:
-      this->m_constraint.m_W1 = cmplxValue != nullptr ? *cmplxValue.get() : 0;
+      this->m_constraint.m_W1 = *cmplxValue;
       break;
     case 12:
       this->m_constraint.m_Eta = std::stod(value);
@@ -69,50 +67,49 @@ void ConstraintReader::ProcessConstraint(int* numProcessedConstraints, const str
       this->m_constraint.m_Q2r = std::stod(value);
       break;
     case 18:
-      this->m_constraint.m_Gamma1 = cmplxValue != nullptr ? *cmplxValue.get() : 0;
+      this->m_constraint.m_Gamma1 = *cmplxValue;
       break;
     case 19:
-      this->m_constraint.m_Gamma1Prime = cmplxValue != nullptr ? *cmplxValue.get() : 0;
+      this->m_constraint.m_Gamma1Prime = *cmplxValue;
       break;
     case 20:
-      this->m_constraint.m_P1 = cmplxValue != nullptr ? *cmplxValue.get() : 0;
+      this->m_constraint.m_P1 = *cmplxValue;
       break;
     case 21:
-      this->m_constraint.m_P1Prime = cmplxValue != nullptr ? *cmplxValue.get() : 0;
+      this->m_constraint.m_P1Prime = *cmplxValue;
       break;
     case 22:
-      this->m_constraint.m_Q1 = cmplxValue != nullptr ? *cmplxValue.get() : 0;
+      this->m_constraint.m_Q1 = *cmplxValue;
       break;
     case 23:
-      this->m_constraint.m_Q2 = cmplxValue != nullptr ? *cmplxValue.get() : 0;
+      this->m_constraint.m_Q2 = *cmplxValue;
       break;
     case 24:
-      this->m_constraint.m_Q1Prime = cmplxValue != nullptr ? *cmplxValue.get() : 0;
+      this->m_constraint.m_Q1Prime = *cmplxValue;
       break;
-    case 24:
-      this->m_constraint.m_Q2Prime = cmplxValue != nullptr ? *cmplxValue.get() : 0;
+    case 25:
+      this->m_constraint.m_Q2Prime = *cmplxValue;
       break;
   }
-
-  *numProcessedConstraints++
 }
 
 void ConstraintReader::ReadHelper() {
-  ifstream readData(Constants::FILEPATH);
+  ifstream readData(FILEPATH);
   if (!readData.is_open())
     throw runtime_error("Error opening file containing constraint configurations");
 
   string line;
   std::string delimiter = "=";
-  int pos = 0;
   int processedConstraints = 0;
 
   while (getline(readData, line)) {
-    while ((pos = s.find(delimiter)) != std::string::npos) {
-      string token = s.substr(0, pos);
-      string value = s.substr(pos, s.length());
-      std::unique_ptr<complex<double>> cmplxValue = TransformToCmplxValue(value);
-      ProcessConstraint(&processedConstraints, value, cmplxValue)
+    while (std::size_t pos = line.find(delimiter) != std::string::npos) {
+      string token = line.substr(0, pos);
+      string value = line.substr(pos, line.length());
+      std::unique_ptr<complex<double>> cmplxValue
+          = std::make_unique<complex<double>>(TransformToCmplxValue(value));
+      ProcessConstraint(processedConstraints, value, cmplxValue.get());
+      processedConstraints++;
     }
   }
 }
@@ -126,44 +123,51 @@ void ConstraintReader::Read() {
   this->ReadHelper();
 }
 
-bool ConstraintReader::IsOperator(const char& element) { return element == "-" || element == "+"; }
+bool ConstraintReader::IsOperator(const char& element) { return element == '-' || element == '+'; }
+
+bool ConstraintReader::HasOperatorAndImaginaryNumber(const char& element, bool containsOperator,
+                                                     bool containsImaginaryValue) {
+  if (IsOperator(element)) {
+    containsOperator = true;
+  }
+
+  if (element == 'i') {
+    containsImaginaryValue = true;
+  }
+
+  // safe to assume if "i" is present and the value contains an operator, this is a complex
+  // number
+  if (containsImaginaryValue && containsOperator) {
+    return true;
+  }
+
+  return false;
+}
 
 bool ConstraintReader::IsComplex(const string& val) {
   bool containsImaginaryValue = false;
-  bool constainsOperator = false;
+  bool containsOperator = false;
 
-  return find_if(val.begin(), val.end(), [&](const char& element) {
-    if (IsOperator(element)) {
-      constainsOperator = true;
-    }
-
-    if (element == "i") {
-      containsImaginaryValue = true;
-    }
-
-    // safe to assume if "i" is present and the value contains an operator, this is a complex number
-    if (containsImaginaryValue && containsOperator) {
-      return true;
-    }
-
-    return false;
+  auto it = find_if(val.begin(), val.end(), [&](const char& element) {
+    return HasOperatorAndImaginaryNumber(element, containsOperator, containsImaginaryValue);
   });
+
+  return it != val.end();
 }
 
-unique_ptr<complex<double>>& ConstraintReader::TransformToCmplxValue(const string& value) {
+complex<double> ConstraintReader::TransformToCmplxValue(const string& value) {
   // check if value is a complex value
-  std::unique_ptr<complex<double>> cmplxValue;
   if (IsComplex(value)) {
     // obtain complev value;
     int re, im;
     char sign;
     std::stringstream stream(value);
     while (stream >> re >> sign >> im) {
-      return std::make_unique<complex<double>>(re, (sign == '-') ? -im : im);
+      return complex<double>(re, (sign == '-') ? -im : im);
     }
   }
 
-  return nullptr;
+  return complex<double>(0, 0);
 }
 
 void ConstraintReader::Print() { std::cout << "Constraint object: " << this->m_constraint << "\n"; }

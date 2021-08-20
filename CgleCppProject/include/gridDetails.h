@@ -3,11 +3,13 @@
 #include <constraint.h>
 #include <functionHandler.h>
 
+#include <Eigen/Dense>
 #include <memory>
 #include <vector>
 
-#include "Eigen/Dense"
 #include "helper.h"
+
+using namespace std;
 
 namespace CGLE {
   /**
@@ -64,6 +66,8 @@ namespace CGLE {
      * @return {int}  : number of points on the y axis
      */
     int GetNumYPts() const;
+    vector<double> m_time_pts;
+    vector<double> m_x_pts;
 
   private:
     GridDimensions m_dimensions;
@@ -76,9 +80,6 @@ namespace CGLE {
     int m_interval_end_time;
     int m_start_pos;
     int m_end_pos;
-
-    vector<double> m_time_pts;
-    vector<double> m_x_pts;
 
     /**
      * @brief sets the grid dimension enum

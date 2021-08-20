@@ -2,7 +2,7 @@ build-target:
 	cmake -S standalone -B build/standalone
 	cmake --build build/standalone ./build/standalone/Greeter --help
 
-build-test-suite:
+test-suite:
 	cmake -S test -B build/test
 	cmake --build build/test
 	CTEST_OUTPUT_ON_FAILURE=1 cmake -DENABLE_TEST_COVERAGE=1 --build build/test --target test

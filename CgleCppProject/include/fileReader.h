@@ -1,7 +1,6 @@
-#pragma once
-
 #include <constraint.h>
 
+#include <fstream>
 #include <memory>
 #include <string>
 #include <vector>
@@ -26,7 +25,7 @@ namespace CGLE {
 
   private:
     string m_filePath;
-    Parameter::Constraint m_constraint;
+    Constraint m_constraint;
 
     /**
      * ReadHelper helper function to read the contents of a constraint file
@@ -39,8 +38,8 @@ namespace CGLE {
      */
     void Print();
 
-    void ProcessConstraint(int* numProcessedConstraints, const string& value,
-                           std::unique_ptr<complex<double>>& cmplxValue);
+    void ProcessConstraint(int numProcessedConstraints, const string& value,
+                           complex<double>* cmplxValue);
     /**
      * Checks if the element being read in has and operator (- | +)
      * @param  {char} element :  The element of interest
@@ -60,6 +59,9 @@ namespace CGLE {
      * @param  {string} value                 : String representation of complex number
      * @return {unique_ptr<complex<double>>}  : Pointer to the complex type
      */
-    unique_ptr<complex<double>>& TransformToCmplxValue(const string& value);
+    complex<double> TransformToCmplxValue(const string& value);
+
+    bool HasOperatorAndImaginaryNumber(const char& element, bool containsOperator,
+                                       bool containsImaginaryValue);
   };
 }  // namespace CGLE

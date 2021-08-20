@@ -1,12 +1,14 @@
 #pragma once
 
+#include <cell.h>
 #include <constraint.h>
 #include <functionHandler.h>
+#include <gridDetails.h>
 
+#include <Eigen/Dense>
 #include <memory>
 #include <vector>
 
-#include "Eigen/Dense"
 #include "helper.h"
 
 using namespace std;
@@ -17,9 +19,9 @@ namespace CGLE {
     /**
      * @brief generates a grid object
      *
-     * @param  {Parameter::Constraint} constraint : Object outlining grid constraints
+     * @param  {Constraint} constraint : Object outlining grid constraints
      */
-    Grid(Parameter::Constraint& constraint);
+    Grid(Constraint& constraint);
 
     /**
      * @brief generates a grid object
@@ -28,10 +30,9 @@ namespace CGLE {
      * @param  {int} num_y_pts : number of points on y axis
      * @param  {int} num_z_pts : number of points on z axis
      * @param  {int} num_pts   : total number of points across the entire grid
-     * @param  {Parameter::Constraint} constraint : Object outlining grid constraints
+     * @param  {Constraint} constraint : Object outlining grid constraints
      */
-    Grid(int num_x_pts, int num_y_pts, int num_z_pts, int num_pts,
-         Parameter::Constraint& constraint);
+    Grid(int num_x_pts, int num_y_pts, int num_z_pts, int num_pts, Constraint& constraint);
 
     /**
      * @brief generates a grid object
@@ -42,10 +43,10 @@ namespace CGLE {
      * @param  {double} dx     : space between points on x axis
      * @param  {double} dy     : space between points on y axis
      * @param  {double} dz     : space between points on z axis
-     * @param  {Parameter::Constraint} constraint : Object outlining grid constraints
+     * @param  {Constraint} constraint : Object outlining grid constraints
      */
     Grid(int num_x_pts, int num_y_pts, int num_z_pts, double dx, double dy, double dz,
-         Parameter::Constraint& constraint);
+         Constraint& constraint);
 
     /**
      * PerturbGrid perturbs the grid meaning computes the amplitude with some jitter at
