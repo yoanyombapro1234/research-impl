@@ -97,10 +97,10 @@ function constraints = ComputeConstraints(solutionMetadata)
                 constraints.Q1_prime = complex(0.6, -3);
                 constraints.Q2_prime = complex(-0.5, 2.25);
             elseif metadata.CaseType == 2
-                constraints.startTime = 0; %0;
-                constraints.endTime = 40; %40
-                constraints.startPos = -50; %50
-                constraints.endPos = 50; %50
+                constraints.startTime = 0; 0
+                constraints.endTime = 40;
+                constraints.startPos = -50;
+                constraints.endPos = 50;
 
                 constraints.L = cons2;
                 constraints.k1 = (0.01283462537560516) + (1i * 0.9911184493673615);

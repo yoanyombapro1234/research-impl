@@ -3,7 +3,7 @@
 % 2). Look into folding behavior 
 % 3). Variety of graphs capturing rate of change in amplitude over time
 clc; clear all; close all;
-darkdark.WaveType = "Front-Front";
+darkdark.WaveType = "Dark-Dark";
 darkdark.Version = 2;
 
 brightbright.WaveType = "Bright-Bright";
@@ -15,8 +15,8 @@ frontfront.Version = 2;
 metas = [darkdark, brightbright, frontfront];
 
 CaseTypes = 2;
-numPoints = 30;
-pertubationCoefficient = 0.25;
+numPoints = 50;
+pertubationCoefficient = 0.05;
 
 % define plotting configurations
 isStabilityAnalysisPlot = true;
@@ -28,8 +28,8 @@ isPlotMeshGradientEnabled = true;
 destination = "C:/Users/yoanyomba/Desktop/research-ccgl/CGL/images";
 ext = "jpg";
 
-for j = 1:length(metas) 
-  for i = 1:CaseTypes
+for j = 1:1%length(metas) 
+  for i = 2 %1:CaseTypes
      metadata = metas(j);
      metadata.CaseType = i;
      % obtain functions and constraints of interest
@@ -55,7 +55,7 @@ for j = 1:length(metas)
      %saveas(gcf, sprintf('%s',fileNameMesh), 'jpeg');
      
      % generate plots
-     PlotSurface(grid, isStabilityAnalysisPlot, isShadingInterpEnabled, isLightGourandEnabled, isMaterialDullEnabled);
+     % PlotSurface(grid, isStabilityAnalysisPlot, isShadingInterpEnabled, isLightGourandEnabled, isMaterialDullEnabled);
      % saveas(gcf, sprintf('%s',fileName), 'jpeg');
 
   end
