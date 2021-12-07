@@ -1,11 +1,10 @@
-function grid = PerformNovelStabilityAnalysis(functions, grid)
+function grid = PerformNovelStabilityAnalysis(functions, grid, plotResults)
 
     metadata = functions.Metadata;
 
     da = [];
     db = [];
     
-    plotResults = true;
     
     tempA = grid.PerturbedGridA;
     tempB = grid.PerturbedGridB;
@@ -17,6 +16,12 @@ function grid = PerformNovelStabilityAnalysis(functions, grid)
     
     grid.PerturbedGridAA = grid.PerturbedGridA;
     grid.PerturbedGridBB = grid.PerturbedGridB;
+    
+    grid.PerturbedGridBB(:, 1) = 0;
+    grid.PerturbedGridBB(:, end) = 0;
+    
+    grid.PerturbedGridAA(:, 1) = 0;
+    grid.PerturbedGridAA(:, end) = 0;
     
     outputA = [tempA(1,:); tempA(2:end, :) * 0];
     outputB = [tempB(1,:); tempB(2:end, :) * 0];
@@ -60,24 +65,36 @@ function grid = PerformNovelStabilityAnalysis(functions, grid)
            
            grid.PerturbedGridAA(i, :) = Un_a; 
            outputA(i, :) = Un_a;
+           outputA(:, 1) = 0;
+           outputA(:, end) = 0;
+           
            [dx_as, dy_as] = gradient(abs(grid.PerturbedGridAA));
            
            dx = abs((dx_ap - dx_as) / dx_ap);
            dy = abs((dy_ap - dy_as) / dy_ap);
            
-           
+           % enforce boundary conditions 
+           grid.PerturbedGridAA(:, 1) = 0;
+           grid.PerturbedGridAA(:, end) = 0;
+
            UU_b = grid.B_coeff.BB_inv * db;
            Un_b = [Un_b(1), UU_b', Un_b(grid.Nx)];
            % place the current set of computed amplitudes for all positions at
            % the current time which is i
            grid.PerturbedGridBB(i, :) = Un_b; 
            outputB(i, :) = Un_b;
-            
+           outputB(:, 1) = 0;
+           outputB(:, end) = 0;
+           
+           % enforce boundary conditions 
+           grid.PerturbedGridBB(:, 1) = 0;
+           grid.PerturbedGridBB(:, end) = 0;
+           
            max(max(grid.PerturbedGridAA .* conj(grid.PerturbedGridAA)))
         
          if plotResults == true
                subplot(2,1,1)
-               mesh(grid.X,grid.T, abs(outputA),'FaceAlpha','0.1');
+               mesh(grid.T,grid.X, abs(outputA),'FaceAlpha','0.1');
                %shold1 = mesh(grid.X,grid.T,abs(grid.GroundTruthA));
                title("Wave Stabilization (Case A) iteration " + i + " Max Amplitude" + max(max(abs(outputA)))); 
                xlabel("Space")
@@ -85,19 +102,21 @@ function grid = PerformNovelStabilityAnalysis(functions, grid)
                zlabel("Amplitude");
                view(30,45)
                axis on;
-               hold on
-               shold1 = mesh(grid.X,grid.T,abs(grid.GroundTruthA));
+               %hold on
+               %shold1 = mesh(grid.X,grid.T,abs(grid.GroundTruthA));
 
                subplot(2,1,2)
-               mesh(grid.X,grid.T, abs(outputB),'FaceAlpha','0.1');
-               shold2 = mesh(grid.X,grid.T,abs(grid.GroundTruthB));
+               mesh(grid.T,grid.X, abs(outputB),'FaceAlpha','0.1');
+               %shold2 = mesh(grid.X,grid.T,abs(grid.GroundTruthB));
                title("Wave Stabilization (Case B) iteration " + i + " Max Amplitude" + max(max(abs(outputB))))
                xlabel("Space")
                ylabel("Time")
                zlabel("Amplitude")
                view([30 45]);                         % change the viewing angle - see doc view
                axis on;
-               hold on;
+               %hold on;
+               %shold1 = mesh(grid.X,grid.T,abs(grid.GroundTruthB));
+
                
                
                %subplot(3,1,3)
@@ -105,14 +124,19 @@ function grid = PerformNovelStabilityAnalysis(functions, grid)
                
                F(i) = getframe(gcf);
                drawnow;
-               pause(0.001);
+               pause(0.01);
                fr = F;
          end
         end
     end
+    outputB(:, 1) = 0;
+    outputB(:, end) = 0;
+    outputA(:, 1) = 0;
+    outputA(:, end) = 0;
     
     grid.PerturbedGridAA = outputA;
     grid.PerturbedGridBB = outputB;
+     
 end
 
 function [Da, Db] = ComputeAtCurrentTimeAndPosition(n, m, grid)

@@ -67,9 +67,9 @@ function PlotMesh(grid, isStabilityAnalysis, plotGradient)
         
         subplot(2,3,3)
         if plotGradient 
-           PlotGradient(x, t, d, true)
+           PlotGradient(t, x, d, true)
         else 
-            mesh(x,t,abs(d));
+            mesh(t,x,abs(d));
             %hold on
             %[FX,FY] = gradient(abs(d));   
             %quiver(x,t,FX,FY)
@@ -84,7 +84,7 @@ function PlotMesh(grid, isStabilityAnalysis, plotGradient)
         if plotGradient 
            PlotGradient(t, x, e, true)
         else 
-            mesh(x,t,abs(e));
+            mesh(,x,abs(e));
             %hold on
             %[FX,FY] = gradient(abs(e));   
             %quiver(x,t,FX,FY)
