@@ -15,7 +15,7 @@ frontfront.Version = 2;
 metas = [darkdark, brightbright, frontfront];
 
 CaseTypes = 2;
-numPoints = 40;
+numPoints = 75;
 pertubationCoefficient = 0.10;
 
 % define plotting configurations
@@ -24,13 +24,13 @@ isShadingInterpEnabled =  true;
 isLightGourandEnabled = true;
 isMaterialDullEnabled = false;
 isPlotMeshGradientEnabled = false;
-plotResults = true;
+plotResults = false;
 
 destination = "C:/Users/yoanyomba/Desktop/research-ccgl/CGL/images";
 ext = "jpg";
 
 for j = 2:2%length(metas) 
-  for i = 1%1:CaseTypes
+  for i = 1:1%CaseTypes
      metadata = metas(j);
      metadata.CaseType = i;
      % obtain functions and constraints of interest
@@ -52,21 +52,23 @@ for j = 2:2%length(metas)
      % outSurfaceFile = fullfile(destination, sprintf('%s',fileName));  
      % outMeshFile = fullfile(destination, sprintf('%s',fileNameMesh));   
      
-     PlotMesh(grid, true, isPlotMeshGradientEnabled);
+     % PlotMesh(grid, true, isPlotMeshGradientEnabled);
      %saveas(gcf, sprintf('%s',fileNameMesh), 'jpeg');
      
-     % generate plots
-     % PlotSurface(grid, isStabilityAnalysisPlot, isShadingInterpEnabled, isLightGourandEnabled, isMaterialDullEnabled);
-     % saveas(gcf, sprintf('%s',fileName), 'jpeg');
-     d = abs(grid.PerturbedGridAA-grid.PerturbedGridA);
-     %d = d(2:end-1, :);
-     d = d(:, 2:end-1);
+     d = grid.PerturbedGridAA(:, 2:end-1);
      d = d(2:end-1, :);
-     
+
+     e = grid.PerturbedGridBB(:, 2:end-1);
+     e = e(2:end-1, :);
+
      x = grid.X(2:end-1);
      t = grid.T(2:end-1);
      x = grid.X(2:end-1);
-     figure; mesh(t,x,d);
+         
+     % generate plots
+     % PlotSurface(grid, isStabilityAnalysisPlot, isShadingInterpEnabled, isLightGourandEnabled, isMaterialDullEnabled);
+     % saveas(gcf, sprintf('%s',fileName), 'jpeg');
+     PlotFigurine(x, t, d);
   end
 end
 
@@ -84,6 +86,12 @@ function Rotate()
         view(i, i); %update view
         pause(0.1);
     end
+end
+
+function PlotFigurine(x, t, wave)
+    figure;
+    b = mesh(x,t,abs(wave), 'MeshStyle', 'row', 'LineWidth', 1, 'edgecolor', 'k');
+    title("absolute amplitude difference between ground truth B and perturbed B");
 end
 
 

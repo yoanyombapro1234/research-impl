@@ -48,9 +48,8 @@ function PlotMesh(grid, isStabilityAnalysis, plotGradient)
          t = grid.T(2:end-1);
          x = grid.X(2:end-1);
      
-        
         subplot(2,3,1)
-        mesh(X,T,abs(grid.GroundTruthA)); 
+        mesh(X,T,abs(grid.GroundTruthA), 'MeshStyle', 'column', 'LineWidth', 0.2); 
         title(ampAText);
         xlabel('space'); ylabel('time'); zlabel("|A|^2");
         view(v);
@@ -58,7 +57,7 @@ function PlotMesh(grid, isStabilityAnalysis, plotGradient)
         hidden off;
 
         subplot(2,3,2)
-        mesh(X,T,abs(grid.GroundTruthB));
+        mesh(X,T,abs(grid.GroundTruthB), 'MeshStyle', 'row', 'LineWidth', 1, 'edgecolor', 'k');
         title(ampBText);
         xlabel('space'); ylabel('time'); zlabel("|B|^2");
         view(v);  
@@ -69,7 +68,7 @@ function PlotMesh(grid, isStabilityAnalysis, plotGradient)
         if plotGradient 
            PlotGradient(x, t, d, true)
         else 
-            mesh(x,t,abs(d));
+            mesh(x,t,abs(d),'MeshStyle', 'row', 'LineWidth', 1, 'edgecolor', 'k');
             %hold on
             %[FX,FY] = gradient(abs(d));   
             %quiver(x,t,FX,FY)
@@ -84,7 +83,7 @@ function PlotMesh(grid, isStabilityAnalysis, plotGradient)
         if plotGradient 
            PlotGradient(t, x, e, true)
         else 
-            mesh(x,t,abs(e));
+            mesh(x,t,abs(e), 'MeshStyle', 'column', 'LineWidth', 0.2);
             %hold on
             %[FX,FY] = gradient(abs(e));   
             %quiver(x,t,FX,FY)

@@ -94,7 +94,7 @@ function grid = PerformNovelStabilityAnalysis(functions, grid, plotResults)
         
          if plotResults == true
                subplot(2,1,1)
-               mesh(grid.T,grid.X, abs(outputA),'FaceAlpha','0.1');
+               mesh(grid.T,grid.X, abs(outputA),'FaceAlpha','0.1', 'MeshStyle', 'column', 'LineWidth', 1);
                %shold1 = mesh(grid.X,grid.T,abs(grid.GroundTruthA));
                title("Wave Stabilization (Case A) iteration " + i + " Max Amplitude" + max(max(abs(outputA)))); 
                ylabel("Space")
@@ -106,7 +106,7 @@ function grid = PerformNovelStabilityAnalysis(functions, grid, plotResults)
                %shold1 = mesh(grid.X,grid.T,abs(grid.GroundTruthA));
 
                subplot(2,1,2)
-               mesh(grid.T,grid.X, abs(outputB),'FaceAlpha','0.1');
+               mesh(grid.T,grid.X, abs(outputB),'FaceAlpha','0.1', 'MeshStyle', 'column', 'LineWidth', 1);
                %shold2 = mesh(grid.X,grid.T,abs(grid.GroundTruthB));
                title("Wave Stabilization (Case B) iteration " + i + " Max Amplitude" + max(max(abs(outputB))))
                ylabel("Space")
